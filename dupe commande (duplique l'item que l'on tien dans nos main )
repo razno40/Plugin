@@ -1,0 +1,39 @@
+package com.example.dupeplugin;
+
+import org.bukkit.Material;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.java.JavaPlugin;
+
+public class DupePlugin extends JavaPlugin implements CommandExecutor {
+
+    @Override
+    public void onEnable() {
+        // Enregistrer la commande /dupe dans plugin.yml
+        this.getCommand("dupe").setExecutor(this);
+    }
+
+    @Override
+    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+        if (sender instanceof Player) {
+            Player player = (Player) sender;
+            ItemStack itemInHand = player.getInventory().getItemInMainHand();
+
+            // Vérifie si l'item est vide
+            if (itemInHand.getType() == Material.AIR) {
+                player.sendMessage("Vous devez tenir un item pour le dupliquer !");
+                return true;
+            }
+
+            // Duplique l'item
+            player.getInventory().addItem(new ItemStack(itemInHand));
+            player.sendMessage("L'item a été dupliqué !");
+        } else {
+            sender.sendMessage("Seuls les joueurs peuvent utiliser cette commande.");
+        }
+        return true;
+    }
+}
